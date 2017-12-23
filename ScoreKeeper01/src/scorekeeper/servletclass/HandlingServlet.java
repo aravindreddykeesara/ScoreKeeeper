@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import scorekeeper.beanclass.PlayerBean;
 
+// Author : Aravind Reddy Keesara 
 @WebServlet("/HandlingServlet")
 public class HandlingServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -93,6 +94,17 @@ public class HandlingServlet extends HttpServlet {
                   }
                   
                   session.setAttribute("Playerdatalist", updatedPlayerScoreList);
+	        	
+	        }else if(action.equals("goToReportsPage")) {
+	        	
+	        	
+	        	HttpSession session =  request.getSession();
+                if(session.getAttribute("Playerdatalist")!=null){
+                	
+                	request.setAttribute("Playerdatalist", session.getAttribute("Playerdatalist"));
+                }
+ 	 				
+	        	
 	        	
 	        	
 	        	

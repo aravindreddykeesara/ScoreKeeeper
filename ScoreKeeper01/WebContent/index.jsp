@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Score Keeper</title>
+  <!-- Author : Aravind Reddy Keesara -->
 <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -172,11 +173,24 @@ $('#tablebody').on('click', '#updatePlayerScore', function(e){
 
 $('#goToReportsPage').on('click',function(e){
 	
-	
-	window.location.href = "Reports.jsp";
-	
-	
-	
+	$.ajax({
+		   url:"${pageContext.request.contextPath}/HandlingServlet",
+		   data:{ action : "goToReportsPage"
+			  
+		   },
+		   
+		   type: 'post'
+        }).done(function (data) {
+	   
+	   window.location.href = "Reports.jsp"
+	 
+   }).fail(function (error) {
+	   
+	  
+	   console.log(" going to report page failure : " + JSON.stringify(error));
+	   
+  });
+	 
 	
 	
 	
