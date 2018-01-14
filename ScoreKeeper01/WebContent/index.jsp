@@ -28,6 +28,7 @@
     <div class="container">
   <h2> Player's names and Scores  |  <a href="#" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#addPlayerModal">Add player</a></h2> 
   <br>  
+        
   
   <!--  table to display player names and scores-->  
   <div class="table-responsive">
@@ -53,7 +54,6 @@
        							</td>
       							
 								<td><input  name="UpdatePlayerScoreValue" id="UpdatePlayerScoreValue" type="number" placeholder="Update score" /></td>
-					            <td><a href="#" id = "updatePlayerScore" class="btn btn-lg btn-success padding">Add</a></td>
 					            
      			 			 </tr>
    					     </c:forEach>
@@ -61,8 +61,17 @@
        			
     				</tbody>
   					</table>
+  		 <div class="updatebutton">
+              
+             <h2>round : ${roundcount} </h2>
+             <a href="#" id = "updatePlayerScore" class="btn btn-lg btn-success padding">update</a>
+        
+        </div>
   					
   	</div>
+        
+    
+        
  </div>
   					
  
@@ -106,7 +115,6 @@
 
 <script type="text/javascript">
 
-
 $('#addPlayerConfirm').click(function(e){
 	
 	 var addPlayerName  = $('#addPlayerPlayerName').val();
@@ -130,24 +138,37 @@ $('#addPlayerConfirm').click(function(e){
 	   
      });
 	 
-	 
-	
-	
-	
+	 	
 });
+    
 
-
-
-
-$('#tablebody').on('click', '#updatePlayerScore', function(e){
-
+var currentRoundScoresData;
+  
+$('#updatePlayerScore').click(function(e){
 	e.preventDefault();
 	console.log("enetred update player score ");
-	 var currentRow=$(this).closest("tr");
+    
+    var table = document.getElementById("tablebody");
+    var rowcount = table.rows.length;
+    
+     currentRoundScoresData = null;
+     
+    for(var i=0; i<=rowcount; i++ ) { 
+              
+     var currentRow=$( "tr:eq("+i+")" );
 	 var PlayerName =currentRow.find("#PlayerName").val();
 	 console.log("player score to be updated  " + PlayerName);
 	 var PlayerUpdateScoreValue = currentRow.find("#UpdatePlayerScoreValue").val();
-	 
+        
+        if(currentRoundScoresData==null){
+            
+            currentRoundScoresData = PlayerUpdateScoreValue ; 
+            
+        }else{
+        	
+        	currentRoundScoresData = currentRoundScoresData +","+PlayerUpdateScoreValue ; 
+        }
+
 	 $.ajax({
 		   url:"${pageContext.request.contextPath}/HandlingServlet",
 		   data:{ action : "updatePlayerScore",
@@ -158,8 +179,9 @@ $('#tablebody').on('click', '#updatePlayerScore', function(e){
 		   type: 'post'
            }).done(function (data) {
 	   
-        	   window.location.reload();
+        	  // window.location.reload();
 	     console.log("added sucess");
+	     console.log("current riound data " + currentRoundScoresData);
 	 
       }).fail(function (error) {
 	   
@@ -168,9 +190,45 @@ $('#tablebody').on('click', '#updatePlayerScore', function(e){
 	   
      });
 	 	
+       
+        
+    }
+    
+    updateRoundCount();
+    
+     
+     
+	
 });
+    
 
-
+function updateRoundCount(){
+     
+     console.log("enetered save round count");
+     
+     $.ajax({
+		   url:"${pageContext.request.contextPath}/HandlingServlet",
+		   data:{ action : "updateRoundCount"
+		   },
+		   
+		   type: 'post'
+           }).done(function (data) {
+	   
+        	   window.location.reload();
+	     console.log("saved round cpunt sucess");
+	     
+	 
+      }).fail(function (error) {
+	   
+	  
+	   console.log("saving round cpunt failure : " + JSON.stringify(error));
+	   
+     });
+	 	    
+     
+ }
+    
+    
 $('#goToReportsPage').on('click',function(e){
 	
 	$.ajax({
@@ -195,14 +253,5 @@ $('#goToReportsPage').on('click',function(e){
 	
 	
 });
-
-
-
-
-
-
-
-
-
 </script>
 </html>

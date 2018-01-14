@@ -1,20 +1,34 @@
 package scorekeeper.beanclass;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class PlayerBean implements Serializable {
 	
 	
 	String PlayerName;
 	double PlayerScore;
+	ArrayList<String> roundScore; 
 	
 	
 	public PlayerBean() {
 		
 		PlayerName = "";
 		PlayerScore = 0;
+		roundScore = null;
 		
 	}
+	
+	
+	public ArrayList<String> getRoundScore() {
+		return roundScore;
+	}
+
+	public void setRoundScore(ArrayList<String> roundScore) {
+		this.roundScore = roundScore;
+	}
+
+
 
 
 	public String getPlayerName() {
@@ -37,11 +51,15 @@ public class PlayerBean implements Serializable {
 	}
 
 
+
+
 	@Override
 	public String toString() {
-		return "PlayerBean [PlayerName=" + PlayerName + ", PlayerScore=" + PlayerScore + "]";
+		return "PlayerBean [PlayerName=" + PlayerName + ", PlayerScore=" + PlayerScore + ", roundScore=" + roundScore
+				+ "]";
 	}
-	
+
+
 	
 	
 

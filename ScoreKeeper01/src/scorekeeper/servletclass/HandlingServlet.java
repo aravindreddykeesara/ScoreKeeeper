@@ -41,18 +41,16 @@ public class HandlingServlet extends HttpServlet {
 	        	ArrayList<PlayerBean> Playerdatalist ;
 	        	
 	        	if(session.getAttribute("Playerdatalist")==null){
-   	 				
+   	 				int roundcount = 1;
 	        		Playerdatalist =  new ArrayList<PlayerBean>();
+	        		session.setAttribute("roundcount", roundcount);
    	 			}
 	        	else{
 	        		
 	        		Playerdatalist = (ArrayList<PlayerBean>) session.getAttribute("Playerdatalist");
 	        	}
-	        	
-	        	
-	        	
+	       	
 	            PlayerBean player = new PlayerBean();
-	            
 	            player.setPlayerName(playername);
 	            player.setPlayerScore(0);
 	            
@@ -65,18 +63,20 @@ public class HandlingServlet extends HttpServlet {
 	        }
 	        else if(action.equals("updatePlayerScore")) {
 	        	
+	        		        	
 	        	String playerName =  request.getParameter("PlayerName");
 	        	double PlayerUpdateScoreValue =  Double.parseDouble(request.getParameter("PlayerUpdateScoreValue"));
 	        	
-	        	
+	        	ArrayList<String> roundlist;
 	        	ArrayList<PlayerBean> updatedPlayerScoreList = new ArrayList<PlayerBean>();
 	        	
 	        	HttpSession session =  request.getSession();
-                  if(session.getAttribute("Playerdatalist")!=null){
+                  if(session.getAttribute("Playerdatalist")!=null){ 
    	 				
                 	  updatedPlayerScoreList =  (ArrayList<PlayerBean>) session.getAttribute("Playerdatalist");
                 	  System.out.println("arraylist players " + updatedPlayerScoreList);
    	 			}
+                  
 	        	
                   for(int i=0; i<updatedPlayerScoreList.size();i++){
                 	  
@@ -88,14 +88,43 @@ public class HandlingServlet extends HttpServlet {
                 	      
                 	      updatedPlayerScoreList.get(i).setPlayerScore(updatedScore);
                 	      
-                	      
+                	      if(updatedPlayerScoreList.get(i).getRoundScore()==null){
+                	    	  
+                	    	  roundlist =  new ArrayList<>();
+                	    	  roundlist.add(String.valueOf(PlayerUpdateScoreValue));
+                	    	  updatedPlayerScoreList.get(i).setRoundScore(roundlist);
+                	    	  
+                	      }else{
+                	    	  
+                	    	  roundlist = new ArrayList<>();
+                	    	  roundlist = updatedPlayerScoreList.get(i).getRoundScore();
+                	    	  roundlist.add(String.valueOf(PlayerUpdateScoreValue));
+                	    	  updatedPlayerScoreList.get(i).setRoundScore(roundlist);  
+                	      }     	      
                 	  }
                 	  
                   }
                   
+                  System.out.println("checking roundlist "  + updatedPlayerScoreList);
                   session.setAttribute("Playerdatalist", updatedPlayerScoreList);
 	        	
-	        }else if(action.equals("goToReportsPage")) {
+	        }else if(action.equals("updateRoundCount")){
+	        	
+	        	HttpSession session =  request.getSession();
+	        	
+	        	if(session.getAttribute("roundcount")!=null){
+              	  
+                    int roundcount= 1;
+                    roundcount = (int) session.getAttribute("roundcount");
+                    roundcount++;
+                    session.setAttribute("roundcount", roundcount);
+               }
+	        	
+	        	
+	        }
+	        
+	        
+	        else if(action.equals("goToReportsPage")) {
 	        	
 	        	
 	        	HttpSession session =  request.getSession();
@@ -104,16 +133,8 @@ public class HandlingServlet extends HttpServlet {
                 	request.setAttribute("Playerdatalist", session.getAttribute("Playerdatalist"));
                 }
  	 				
-	        	
-	        	
-	        	
-	        	
-	        	
 	        }
-		
-		
-		
-		
+
 	}
 	
 	
