@@ -19,7 +19,7 @@
 <body>
 
 <nav class="navbar navbar-inverse">
-  <div class="container-fluid">
+  <div class="container-fluid"> 
     <div class="navbar-header">
       <a class="navbar-brand" href="#">Score table</a>
     </div>
@@ -30,11 +30,26 @@
   </div>
 </nav>
 
+<div class="container">
+  
+  <p>You can analyse the scores in two ways.One is to see the overall score of every player in the game by Selecting the "Compreshensive" tab. Or you can compare the scores of every round between any two players by Selecting the "compare" tab </p>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#Comprehensive">Comprehensive</a></li>
+    <li><a data-toggle="tab" href="#Compare">Compare</a></li>
+  </ul>
+  
+  <div class="tab-content">
+    <div id="Comprehensive" class="tab-pane fade in active">
+      <h3>Overall Score Analysis</h3>
+        <div class="container text-center" id="barChart"></div>  
+    </div>
+    <div id="Compare" class="tab-pane fade">
+      <h3>Detailed comparision between selected players</h3>
+     
+    </div>
+  </div>
+</div>
 
-    
-          <div class="container text-center" id="barChart"></div>  
-
-   
 
 
 </body>
@@ -57,8 +72,21 @@ var dataArray = [
     ];
 console.log(" data array = " +  dataArray);
 
+var secondarray = [ 
+    
+     <c:forEach items="${Playerdatalist}" var="obj">
+    {
+        PlayerName :"<c:out value="${obj.getPlayerName()}"/>",
+        PlayerScore : "<c:out value="${obj.getRoundScore()}"/>"
+    },
+    </c:forEach>
+    ];
 
-dsBarChart(dataArray);
+var thirdarray = secondarray[1].PlayerScore;
+
+console.log(" second array is" + thirdarray[3]);
+
+
 
 function dsBarChartBasics() {
 
@@ -81,7 +109,6 @@ function dsBarChartBasics() {
 
 function dsBarChart(DataArray) {
 	
- 
 
 	console.log("data arraya value " + DataArray.length);
   
@@ -218,8 +245,9 @@ function dsBarChart(DataArray) {
 }
 
 
-
-
-
+    
 </script>
+
+
+
 </html>
