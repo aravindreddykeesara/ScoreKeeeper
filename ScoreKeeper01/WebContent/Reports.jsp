@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="styles/reports.css" type="text/css"/> 
   
  <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  
+   <script src="https://d3js.org/d3.v4.min.js"></script>
   
   
 </head>
@@ -45,7 +45,41 @@
     </div>
     <div id="Compare" class="tab-pane fade">
       <h3>Detailed comparision between selected players</h3>
-     
+        <div class="row text-center">
+            <div class="col-sm-4">
+           
+                <label>Player -1</label>
+                    <select name="PlayerName01" class="form-control" id= "PlayerName01">
+                    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+     				 <c:forEach items="${Playerdatalist}" var="obj">
+     				 <option>${obj.getPlayerName()}</option>
+                       
+    				 </c:forEach>      
+                     </%@>
+                        
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <button class="btn btn-primary" type="button" id="chartclick"> compare</button>
+            </div>
+            <div class="col-sm-4">
+            
+             <label>Player -2</label>
+                    <select name="PlayerName02" class="form-control" id= "PlayerName02">
+                    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+     				 <c:forEach items="${Playerdatalist}" var="obj">
+     				 <option>${obj.getPlayerName()}</option>
+                       
+    				 </c:forEach>      
+                     </%@>
+                        
+                </select>
+            </div>
+ 
+        </div>
+        
+         <div class="container text-right" id="linechart"></div>  
+        
     </div>
   </div>
 </div>
@@ -60,6 +94,50 @@ $('#goToAdminHomePage').on('click',function(e){
 	window.location.href = "index.jsp";
 });
 
+var checkarray = ${Playerdatalist};
+    
+console.log("check array is  " + checkarray[1].PlayerName);
+
+$('#chartclick').on('click',function(e){	
+    
+    
+    $("#linechart").empty();
+    var Playerone = $('#PlayerName01').val();
+    var Playertwo = $('#PlayerName02').val();
+    var PlayerDataArray01 = [];
+    var PlayerDataArray02 = [];
+    
+    for(var i=0;i<checkarray.length;i++){
+        
+        console.log("name matched" + Playerone)
+        
+        if(Playerone === checkarray[i].PlayerName){
+            
+            console.log(" matched 2" + Playerone)
+            
+            PlayerDataArray01 = checkarray[i].roundScore;
+            
+        }
+        
+        
+    }
+    
+      for(var i=0;i<${Playerdatalist.size()};i++){
+        
+        if(Playertwo === checkarray[i].PlayerName){
+            
+            PlayerDataArray02 = checkarray[i].roundScore;
+            
+        }
+        
+        
+    }
+    
+    dslinechart(PlayerDataArray01,PlayerDataArray02);
+	
+});
+    
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 var dataArray = [
@@ -72,21 +150,13 @@ var dataArray = [
     ];
 console.log(" data array = " +  dataArray);
 
-var secondarray = [ 
-    
-     <c:forEach items="${Playerdatalist}" var="obj">
-    {
-        PlayerName :"<c:out value="${obj.getPlayerName()}"/>",
-        PlayerScore : "<c:out value="${obj.getRoundScore()}"/>"
-    },
-    </c:forEach>
-    ];
-
-var thirdarray = secondarray[1].PlayerScore;
-
-console.log(" second array is" + thirdarray[3]);
+var secondarray = ${Playerdatalist[1].roundScore};
 
 
+
+console.log(" second array is p " +secondarray.length);
+
+dsBarChart(dataArray);
 
 function dsBarChartBasics() {
 
@@ -105,6 +175,155 @@ function dsBarChartBasics() {
       barPadding : barPadding
     }     
     ;
+}
+    
+
+    
+function dslinechart(PlayerDataArray01,PlayerDataArray02){
+    
+  console.log("entered here linecgart");
+        
+  var basics = dsBarChartBasics();
+  
+  var margin = basics.margin,
+    width = basics.width,
+     height = basics.height,
+    colorBar = basics.colorBar,
+    barPadding = basics.barPadding
+    ;
+    
+
+
+var xaxisarray = [];
+   
+for (var i = 1; i <= PlayerDataArray01.length; i++) {
+   xaxisarray.push(i);
+ }
+
+class dataclass {
+    
+   constructor(roundnumber,roundscorevaluePerson01,roundscorevaluePerson02){
+       
+       this.roundnumber = roundnumber;
+       this.roundscorevaluePerson01 = roundscorevaluePerson01;
+       this.roundscorevaluePerson02 = roundscorevaluePerson02;
+   }
+}
+  
+var arraydata = [];
+
+for(var i = 0;i<PlayerDataArray01.length;i++){ 
+    var p = new dataclass(xaxisarray[i],PlayerDataArray01[i],PlayerDataArray02[i]);    
+    arraydata.push(p);      
+}
+    
+console.log("arraydata " + JSON.stringify(arraydata));
+    
+// set the ranges
+var x = d3.scaleLinear().range([0, width]);
+var y = d3.scaleLinear().range([height, 0]);
+
+// define the line
+var valueline = d3.line()
+    .x(function(d) { return x(d.roundnumber); })
+    .y(function(d) { return y(d.roundscorevaluePerson01); });
+
+var valueline2 = d3.line()
+    .x(function(d) { return x(d.roundnumber); })
+    .y(function(d) { return y(d.roundscorevaluePerson02); });
+
+var div = d3.select("#linechart").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+ //append the svg obgect to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+var svg = d3.select("#linechart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+// Get the data
+
+
+  // scale the range of the data
+  x.domain(d3.extent(arraydata, function(d) { return d.roundnumber; }));
+  y.domain([0, d3.max(arraydata, function(d) { return Math.max(d.roundscorevaluePerson01,d.roundscorevaluePerson02); })]);
+
+  // add the valueline path.
+  svg.append("path")
+     .data([arraydata])
+     .attr("class", "line")
+     .attr("d", valueline);
+    
+    svg.append("path")
+      .data([arraydata])
+      .attr("class", "line")
+      .style("stroke", "red")
+      .attr("d", valueline2);
+    
+   // add the dots with tooltips
+  svg.selectAll("dot")
+     .data(arraydata)
+   .enter().append("circle")
+     .attr("r", 5)
+     .attr("cx", function(d) { return x(d.roundnumber); })
+     .attr("cy", function(d) { return y(d.roundscorevaluePerson01); })
+     .on("mouseover", function(d) {
+       div.transition()
+         .duration(200)
+         .style("opacity", .9);
+       div.html("round : " + d.roundnumber + "<br/>" + "score :"+ d.roundscorevaluePerson01)
+         .style("left", (d3.event.pageX) + "px")
+         .style("top", (d3.event.pageY - 28) + "px");
+       })
+     .on("mouseout", function(d) {
+       div.transition()
+         .duration(500)
+         .style("opacity", 0);
+       });  
+  
+    //for line 2
+    svg.selectAll("dot")
+     .data(arraydata)
+   .enter().append("circle")
+     .attr("r", 5)
+     .attr("cx", function(d) { return x(d.roundnumber); })
+     .attr("cy", function(d) { return y(d.roundscorevaluePerson02); })
+     .on("mouseover", function(d) {
+       div.transition()
+         .duration(200)
+         .style("opacity", .9);
+       div.html("round : " + d.roundnumber + "<br/>" + "score :"+ d.roundscorevaluePerson02)
+         .style("left", (d3.event.pageX) + "px")
+         .style("top", (d3.event.pageY - 28) + "px");
+       })
+     .on("mouseout", function(d) {
+       div.transition()
+         .duration(500)
+         .style("opacity", 0);
+       });  
+
+
+  // add the X Axis
+  svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  // add the Y Axis
+  svg.append("g")
+      .call(d3.axisLeft(y));
+
+
+    
+          
+    
+    
+    
+    
 }
 
 function dsBarChart(DataArray) {

@@ -55,8 +55,8 @@ public class PlayerBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "PlayerBean [PlayerName=" + PlayerName + ", PlayerScore=" + PlayerScore + ", roundScore=" + roundScore
-				+ "]";
+		return "{PlayerName : " + "'" + PlayerName + "'"+ ", PlayerScore :" + PlayerScore + ", roundScore :" + roundScore
+				+ "}";
 	}
 
 
