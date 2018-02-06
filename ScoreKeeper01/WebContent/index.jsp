@@ -12,23 +12,33 @@
   
 </head>
 <body>
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">Score table</a>
+    
+<!-- Static navbar -->
+    <div class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.jsp">ScoreKeeper</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="index.jsp">Home</a></li>
+            <li><a href="Reports.jsp">Reports</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
     </div>
-    <ul class="nav navbar-nav">
-      <li class="active"><a id="goToAdminHomePage" href="#">Home</a></li>
-      <li><a id="goToReportsPage" href="#">Reports</a></li>
-    </ul>
-  </div>
-</nav>
-
-  
+    
+    
     <div class="container">
   <h2> Player's names and Scores  |  <a href="#" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#addPlayerModal">Add player</a></h2> 
   <br>  
-        
+  <p> Add few players and update some scores for each player to see the magical analysis in <a href="Reports.jsp"><strong>Reports</strong></a> tab</p>      
   
   <!--  table to display player names and scores-->  
   <div class="table-responsive">
@@ -53,7 +63,7 @@
        							  <input  id = "PlayerScore" type = "hidden" value="${obj.getPlayerScore()}" >
        							</td>
       							
-								<td><input  name="UpdatePlayerScoreValue" id="UpdatePlayerScoreValue" type="number" placeholder="Update score" /></td>
+								<td><input  name="UpdatePlayerScoreValue" id="UpdatePlayerScoreValue" type="number" placeholder="Update score" required/></td>
 					            
      			 			 </tr>
    					     </c:forEach>
@@ -63,8 +73,7 @@
   					</table>
   		 <div class="updatebutton">
               
-             <h2>round : ${roundcount} </h2>
-             <a href="#" id = "updatePlayerScore" class="btn btn-lg btn-success padding">update</a>
+             <a type="submit" href="#" id = "updatePlayerScore" class="btn btn-lg btn-success padding">update</a>
         
         </div>
   					
@@ -91,7 +100,7 @@
                
                   <div class="form-group">
                     <label>Player Name</label>
-                   <input type="text" name="addPlayerPlayerName" id="addPlayerPlayerName" tabindex="1" class="form-control" placeholder="enter player Name" value="">
+                   <input type="text" name="addPlayerPlayerName" id="addPlayerPlayerName" tabindex="1" class="form-control" placeholder="enter player Name" value="" required>
                 </div>
                 
                 
@@ -108,6 +117,9 @@
   </div>
   </div>
   
+   <div class="footer">
+       <p>Click <a id="deletePlayerData" href="">here</a> to delete all players data</p>
+   </div>
   					
   					
 
@@ -135,6 +147,30 @@ $('#addPlayerConfirm').click(function(e){
 	   
 	  
 	   console.log("adding player failure : " + JSON.stringify(error));
+	   
+     });
+	 
+	 	
+});
+    
+//deletePlayerData
+
+$('#deletePlayerData').click(function(e){
+	  
+	 $.ajax({
+		   url:"${pageContext.request.contextPath}/HandlingServlet",
+		   data:{ action : "deletePlayerData"
+		   },
+		   
+		   type: 'post'
+           }).done(function (data) {
+	   
+	     console.log("deleted sucess");
+	 
+      }).fail(function (error) {
+	   
+	  
+	   console.log("delete player failure : " + JSON.stringify(error));
 	   
      });
 	 

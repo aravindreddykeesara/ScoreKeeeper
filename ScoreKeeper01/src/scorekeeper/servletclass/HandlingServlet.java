@@ -66,6 +66,10 @@ public class HandlingServlet extends HttpServlet {
 	        		        	
 	        	String playerName =  request.getParameter("PlayerName");
 	        	double PlayerUpdateScoreValue =  Double.parseDouble(request.getParameter("PlayerUpdateScoreValue"));
+	        	if(String.valueOf(PlayerUpdateScoreValue).isEmpty()){
+	        		System.out.println("entered here zero");
+	        		PlayerUpdateScoreValue = 0;
+	        	}
 	        	
 	        	ArrayList<String> roundlist;
 	        	ArrayList<PlayerBean> updatedPlayerScoreList = new ArrayList<PlayerBean>();
@@ -131,6 +135,18 @@ public class HandlingServlet extends HttpServlet {
                 if(session.getAttribute("Playerdatalist")!=null){
                 	
                 	request.setAttribute("Playerdatalist", session.getAttribute("Playerdatalist"));
+                }
+ 	 				
+	        }
+	        
+	        else if(action.equals("deletePlayerData")) {
+	        	
+	        	
+	        	HttpSession session =  request.getSession();
+                if(session.getAttribute("Playerdatalist")!=null){
+                	
+                	request.removeAttribute("Playerdatalist");
+                	session.removeAttribute("Playerdatalist");
                 }
  	 				
 	        }

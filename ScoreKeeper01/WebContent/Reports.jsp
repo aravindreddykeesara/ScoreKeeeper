@@ -18,20 +18,31 @@
 </head>
 <body>
 
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid"> 
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">Score table</a>
+<!-- Static navbar -->
+    <div class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.jsp">ScoreKeeper</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="index.jsp">Home</a></li>
+            <li><a href="Reports.jsp">Reports</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
     </div>
-    <ul class="nav navbar-nav">
-      <li ><a id="goToAdminHomePage" href="#">Home</a></li>
-      <li class="active" ><a id="goToReportsPage" href="#">Reports</a></li>
-    </ul>
-  </div>
-</nav>
+    
 
 <div class="container">
-  
+  <br>
+  <br>
   <p>You can analyse the scores in two ways.One is to see the overall score of every player in the game by Selecting the "Compreshensive" tab. Or you can compare the scores of every round between any two players by Selecting the "compare" tab </p>
   <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#Comprehensive">Comprehensive</a></li>
@@ -41,14 +52,16 @@
   <div class="tab-content">
     <div id="Comprehensive" class="tab-pane fade in active">
       <h3>Overall Score Analysis</h3>
+        <p> Make sure to add some player data and scores in Home page to see magic below</p>
         <div class="container text-center" id="barChart"></div>  
     </div>
     <div id="Compare" class="tab-pane fade">
       <h3>Detailed comparision between selected players</h3>
+        <p> Make sure to add some player data and scores in Home page to see magic below</p>
         <div class="row text-center">
             <div class="col-sm-4">
            
-                <label>Player -1</label>
+                <label>Player -1 <img src="images/bluePlayer.png"></label>
                     <select name="PlayerName01" class="form-control" id= "PlayerName01">
                     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
      				 <c:forEach items="${Playerdatalist}" var="obj">
@@ -58,13 +71,16 @@
                      </%@>
                         
                 </select>
-            </div>
-            <div class="col-sm-4">
-                <button class="btn btn-primary" type="button" id="chartclick"> compare</button>
+               <br>
             </div>
             <div class="col-sm-4">
             
-             <label>Player -2</label>
+                <button class="btn btn-primary" type="button" id="chartclick"> compare</button>
+            
+            </div>
+            <div class="col-sm-4">
+            <br>
+             <label>Player -2 <img src="images/redPlayer.png"></label>
                     <select name="PlayerName02" class="form-control" id= "PlayerName02">
                     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
      				 <c:forEach items="${Playerdatalist}" var="obj">
@@ -94,9 +110,10 @@ $('#goToAdminHomePage').on('click',function(e){
 	window.location.href = "index.jsp";
 });
 
+ 
 var checkarray = ${Playerdatalist};
+
     
-console.log("check array is  " + checkarray[1].PlayerName);
 
 $('#chartclick').on('click',function(e){	
     
@@ -150,11 +167,6 @@ var dataArray = [
     ];
 console.log(" data array = " +  dataArray);
 
-var secondarray = ${Playerdatalist[1].roundScore};
-
-
-
-console.log(" second array is p " +secondarray.length);
 
 dsBarChart(dataArray);
 
@@ -319,11 +331,6 @@ var svg = d3.select("#linechart").append("svg")
 
 
     
-          
-    
-    
-    
-    
 }
 
 function dsBarChart(DataArray) {
@@ -353,15 +360,9 @@ function dsBarChart(DataArray) {
            
             d.PlayerScore = parseInt(d.PlayerScore);
         });
-  // Purpose: No matter what the data is, the bar should fit into the svg area; bars should not
-  // get higher than the svg height. Hence incoming data needs to be scaled to fit into the svg area.  
+  
   var yScale = d3.scale.linear()
-      // use the max funtion to derive end point of the domain (max value of the dataset)
-      // do not use the min value of the dataset as min of the domain as otherwise you will not see the first bar
        .domain([0, d3.max(DataArray, function(d) { return d.PlayerScore; })])
-       // As coordinates are always defined from the top left corner, the y position of the bar
-       // is the svg height minus the data value. So you basically draw the bar starting from the top. 
-       // To have the y position calculated by the range function
        .range([height, 0])
        ;
   
@@ -448,19 +449,8 @@ function dsBarChart(DataArray) {
                   return (i * (width / DataArray.length)) + ((width / DataArray.length - barPadding) / 2);
                })
       .attr("y", 15)
-      .attr("class", "xAxis")
-      //.attr("style", "font-size: 12; font-family: Helvetica, sans-serif")
-      ;     
-   
-  // Title
-  
-  svg.append("text")
-    .attr("x", (width + margin.left + margin.right)/2)
-    .attr("y", 15)
-    .attr("class","title")        
-    .attr("text-anchor", "middle")
-    .text("Score Analysis")
-    ;
+      .attr("class", "xAxis");     
+
 }
 
 
