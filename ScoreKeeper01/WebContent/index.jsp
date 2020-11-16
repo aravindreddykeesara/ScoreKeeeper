@@ -90,7 +90,7 @@
           <div class="modal-dialog">
          <div class="modal-content">
           <div class="modal-header">
-           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Ã—</button>
              <h4 class="modal-title align" id="addPlayerModalLabel">Add a player</h4>
       </div>
       
@@ -140,7 +140,9 @@ $('#addPlayerConfirm').click(function(e){
 		   
 		   type: 'post'
            }).done(function (data) {
-	   
+	       setTimeout(function() {
+               window.location.reload();
+          },3000);
 	     console.log("added sucess");
 	 
       }).fail(function (error) {
